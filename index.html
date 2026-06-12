@@ -1,50 +1,530 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dia dos Namorados</title>
-  <link rel="stylesheet" href="edição.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feliz Dia dos Namorados ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(145deg, #ffe4e9 0%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 🌸 Pétalas caindo */
+        .petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 30% 30%, #ff99b3, #ff6f91);
+            border-radius: 50% 0 50% 0;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0.1;
+            }
+        }
+
+        /* Conteúdo principal */
+        .content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #c2185b;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.6);
+            text-align: center;
+            letter-spacing: 2px;
+            word-break: break-word;
+        }
+
+        /* 💌 Carta interativa */
+        .letter-wrapper {
+            width: 100%;
+            max-width: 420px;
+            perspective: 800px;
+            cursor: pointer;
+        }
+
+        .letter {
+            background: #fff0f3;
+            border: 2px solid #ff8fa3;
+            border-radius: 12px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 25px rgba(194, 24, 91, 0.2);
+            transition: transform 0.6s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .letter.closed {
+            transform: rotateY(0deg);
+        }
+        .letter.open {
+            transform: rotateY(180deg);
+        }
+
+        .letter-face {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .letter-front {
+            background: #fff0f3;
+            z-index: 2;
+        }
+
+        .letter-front .envelope-icon {
+            font-size: 4rem;
+            line-height: 1;
+            color: #d6336c;
+            transition: transform 0.3s;
+        }
+
+        .letter-front p {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #a13d5a;
+            font-style: italic;
+        }
+
+.letter-back {
+  background: #ffe4e9;
+  transform: rotateY(180deg);
+  color: #2200ff;
+  font-size: 1.1rem;
+  text-align: left;
+  line-height: 1.6;
+  padding: 40px 30px;
+  max-height: 500px;
+  overflow: hidden;
+  position: relative;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.pagination {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.pagination button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #2200ff;
+}
+
+
+        .letter-back .heart {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .letter:hover {
+            box-shadow: 0 15px 35px rgba(194, 24, 91, 0.3);
+        }
+
+        /* 📸 Álbum interativo */
+        .album-section {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .album-title {
+            font-size: 1.8rem;
+            color: #c2185b;
+            margin-bottom: 15px;
+        }
+
+        .album-container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 2px solid #ffb6c1;
+        }
+
+        .album-btn {
+            background: #ff8fa3;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .album-btn:hover {
+            background: #d6336c;
+            transform: scale(1.08);
+        }
+
+        .album-btn:active {
+            transform: scale(0.95);
+        }
+
+        .album-frame {
+            flex: 1;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffeef2;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .album-frame img {
+            width: 100%;
+            height: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .album-frame .placeholder {
+            font-size: 1.2rem;
+            color: #a13d5a;
+            padding: 30px 15px;
+            text-align: center;
+        }
+
+        .photo-counter {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #7d3c51;
+        }
+
+        /* responsivo */
+        @media (max-width: 550px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .letter {
+                min-height: 160px;
+                padding: 20px 15px;
+            }
+            .letter-back {
+                font-size: 1rem;
+                padding: 20px 15px;
+            }
+            .album-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.6rem;
+            }
+            .album-frame {
+                min-height: 160px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Preloader -->
-  <div id="preloader">
-    <span class="heart">❤️</span>
-  </div>
 
-  <!-- Título -->
-  <header class="hero">
-    <h1 class="main-title">Feliz Dia dos Namorados 💕</h1>
-  </header>
+    <!-- 🌸 Pétalas animadas -->
+    <div class="petals-container" id="petalsContainer"></div>
 
-  <!-- Carta Interativa -->
-  <section class="letter-container">
-    <div class="letter" id="letter">
-      <div class="envelope">
-        <div class="flap"></div>
-        <div class="seal">❤️</div>
+    <div class="content">
+        <h1>💗 Feliz Dia dos Namorados 💗</h1>
+
+        <!-- 💌 Carta -->
+      <div class="letter-wrapper" id="letterWrapper">
+  <div class="letter closed" id="letter">
+    <div class="letter-face letter-front">
+      <span class="envelope-icon">💌</span>
+      <p>Clique para abrir</p>
+    </div>
+    <div class="letter-face letter-back">
+      <span class="heart">❤️</span>
+
+      <!-- Página 1 -->
+      <div class="page active">
+        <p>Pituco,</p>
+        <p>Talvez eu nunca encontre palavras suficientes pra te explicar o tamanho do que você se tornou dentro de mim. Mas, mesmo assim, eu preciso tentar. Porque guardar tudo isso no peito às vezes dói, de tão intenso que é amar você.</p>
+        <p>Você chegou de um jeito simples, quase silencioso… mas mudou partes minhas que ninguém nunca conseguiu tocar. E desde então, eu nunca mais fui o mesmo.</p>
       </div>
-      <div class="paper" id="paper"></div>
+
+      <!-- Página 2 -->
+      <div class="page">
+        <p>Porque amar você não virou só um sentimento. Virou parte da minha existência. Você está nos meus pensamentos mais leves, nas minhas noites mais silenciosas, nos meus planos mais distantes e até nos meus medos mais profundos.</p>
+        <p>Tem algo no seu olhar que me faz acreditar que o mundo ainda pode ser bonito. Sua voz acalma dores que eu nunca contei pra ninguém, e o seu jeito, meigo, complicado, intenso e tão único, faz meu coração se apaixonar por você em cada detalhe.</p>
+      </div>
+
+      <!-- Página 3 -->
+      <div class="page">
+        <p>Eu desejo profundamente ser o último amor. O amor que fica. O amor que não vai embora quando as coisas ficarem difíceis. O amor que escolhe permanecer todos os dias.</p>
+        <p>Quero acordar e dormir com você por muitos anos. Quero construir uma casa cheia de memórias, ouvir sua risada ecoando pelos cantos, segurar sua mão quando o mundo parecer pesado demais.</p>
+      </div>
+
+      <!-- Página 4 -->
+      <div class="page">
+        <p>Consigo imaginar nós dois, nossos dois filhos e um cachorro correndo pela grama numa tarde ensolarada. Você sorrindo enquanto arruma um piquenique, o vento balançando seu cabelo, as crianças brincando perto da gente…</p>
+        <p>Aqueles momentos simples, calmos e verdadeiros… aqueles momentos que fazem a vida valer a pena. Porque quando penso em felicidade, é exatamente essa cena que meu coração desenha.</p>
+      </div>
+
+      <!-- Página 5 -->
+      <div class="page">
+        <p>Em meio a todas as adversidades que a vida colocar no nosso caminho, a minha escolha sempre vai ser você. Sempre nós.</p>
+        <p>Eu prometo que, independente do que aconteça, eu sempre vou lutar pelo nosso bem-estar, pela nossa paz e pela felicidade que construirmos juntos. Nunca contra você, sempre ao seu lado.</p>
+        <p>Antes de você, meu coração apenas batia. Depois de você, ele finalmente encontrou um motivo pra sentir. Você virou a parte mais bonita da minha vida. 🤍</p>
+      </div>
+
+      <!-- Controles -->
+      <div class="pagination">
+        <button id="prevPage">◀</button>
+        <span id="pageIndicator">1 / 5</span>
+        <button id="nextPage">▶</button>
+      </div>
+      <!-- Música -->
+<audio id="bgMusic" src="umacartaaela.mp3" loop></audio>
+
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- Álbum estilo livro -->
-  <section class="album">
-    <button id="prev" class="arrow">⬅️</button>
-    <div class="book">
-      <div class="page left">💑 Primeira página</div>
-      <div class="page right">🌹 Segunda página</div>
-      <div class="page left">💌 Terceira página</div>
-      <div class="page right">💖 Quarta página</div>
+
+        <!-- 📸 Álbum -->
+        <div class="album-section">
+            <div class="album-title">Quero viver por muito tempo, para compartilhar cada momento ao seu lado.</div>
+            <div class="album-container">
+                <button class="album-btn" id="prevBtn" aria-label="Anterior">◀</button>
+                <div class="album-frame" id="albumFrame">
+                    <div class="placeholder">💕 Carregando fotos...</div>
+                </div>
+                <button class="album-btn" id="nextBtn" aria-label="Próximo">▶</button>
+            </div>
+            <div class="photo-counter" id="photoCounter">1 /</div>
+        </div>
     </div>
-    <button id="next" class="arrow">➡️</button>
-  </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>Feito com ❤️ para o Dia dos Namorados</p>
-  </footer>
+    <script>
+  // ========== PÉTALAS ==========
+  (function createPetals() {
+    const container = document.getElementById('petalsContainer');
+    const count = 25; // número de pétalas
+    for (let i = 0; i < count; i++) {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
+      const size = 12 + Math.random() * 16;
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+      petal.style.left = Math.random() * 100 + '%';
+      const duration = 6 + Math.random() * 8;
+      const delay = Math.random() * 10;
+      petal.style.animationDuration = duration + 's';
+      petal.style.animationDelay = delay + 's';
+      petal.style.opacity = 0.5 + Math.random() * 0.4;
+      container.appendChild(petal);
+    }
+  })();
 
-  <script src="edição.js"></script>
-</body>
-</html>
+  // ========== CARTA ==========
+  const letterWrapper = document.getElementById('letterWrapper');
+  const letter = document.getElementById('letter');
+  const bgMusic = document.getElementById('bgMusic');
+
+  letterWrapper.addEventListener('click', function(e) {
+    // evita que o clique nas setas feche a carta
+    if (e.target.closest('.pagination')) return;
+
+    if (letter.classList.contains('closed')) {
+      letter.classList.remove('closed');
+      letter.classList.add('open');
+      // toca música ao abrir
+      bgMusic.play().catch(err => {
+        console.log("Autoplay bloqueado, mas o clique já libera:", err);
+      });
+    } else {
+      letter.classList.remove('open');
+      letter.classList.add('closed');
+      // pausa música ao fechar
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+  });
+
+  // ===== PAGINAÇÃO =====
+  const pages = document.querySelectorAll('.letter-back .page');
+  const prevBtn = document.getElementById('prevPage');
+  const nextBtn = document.getElementById('nextPage');
+  const indicator = document.getElementById('pageIndicator');
+
+  let currentPage = 0;
+
+  function showPage(index) {
+    pages.forEach((page, i) => {
+      page.classList.toggle('active', i === index);
+    });
+    indicator.textContent = `${index + 1} / ${pages.length}`;
+  }
+
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentPage > 0) {
+      currentPage--;
+      showPage(currentPage);
+    }
+  });
+
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentPage < pages.length - 1) {
+      currentPage++;
+      showPage(currentPage);
+    }
+  });
+
+  showPage(currentPage);
+
+  // ========== ÁLBUM ==========
+  const fotos = [
+    'foto 1 mb e vit.jpeg',
+    'foto 2 mb e vit.jpeg',
+    'foto 3 mb e vit.jpeg',
+    'foto 4 mb e vit.jpeg',
+    'foto 5 mb e vit.jpeg',
+    'foto 6 mb e vit.jpeg',
+    'foto 7 mb e vit.jpeg',
+    'foto 8 mb e vit.jpeg',
+    'foto 9 mb e vit.jpeg'
+  ];
+
+  const fallbackTexts = [
+    '💗 Foto 1',
+    '💗 Foto 2',
+    '💗 Foto 3',
+    '💗 Foto 4',
+    '💗 Foto 5',
+    '💗 Foto 6',
+    '💗 Foto 7',
+    '💗 Foto 8',
+    '💗 Foto 9'
+  ];
+
+  let currentIndex = 0;
+  const frame = document.getElementById('albumFrame');
+  const counter = document.getElementById('photoCounter');
+  const prevAlbumBtn = document.getElementById('prevBtn');
+  const nextAlbumBtn = document.getElementById('nextBtn');
+
+  function renderPhoto(index) {
+    const total = fotos.length;
+    index = ((index % total) + total) % total;
+    currentIndex = index;
+
+    const imgUrl = fotos[currentIndex];
+    const fallback = fallbackTexts[currentIndex];
+
+    const img = document.createElement('img');
+    img.alt = `Foto ${currentIndex + 1}`;
+    img.src = imgUrl;
+    img.onerror = function() {
+      this.style.display = 'none';
+      const div = document.createElement('div');
+      div.className = 'placeholder';
+      div.textContent = fallback;
+      frame.innerHTML = '';
+      frame.appendChild(div);
+    };
+    img.onload = function() {
+      frame.innerHTML = '';
+      frame.appendChild(img);
+    };
+
+    frame.innerHTML = '<div class="placeholder">⏳ Carregando...</div>';
+    frame.innerHTML = '';
+    frame.appendChild(img);
+
+    counter.textContent = `${currentIndex + 1} / ${total}`;
+  }
+
+  prevAlbumBtn.addEventListener('click', () => {
+    renderPhoto(currentIndex - 1);
+  });
+
+  nextAlbumBtn.addEventListener('click', () => {
+    renderPhoto(currentIndex + 1);
+  });
+
+  renderPhoto(0);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      prevAlbumBtn.click();
+    } else if (e.key === 'ArrowRight') {
+      nextAlbumBtn.click();
+    }
+  });
+</script>
